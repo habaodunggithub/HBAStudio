@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest a focused improvement.
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Include relevant alternatives or a synthetic example.
+    validations:
+      required: true

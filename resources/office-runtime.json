@@ -1,0 +1,65 @@
+{
+  "id": "zeta-2025-05",
+  "engine": "LibreOffice Writer",
+  "version": "ZetaOffice 2025-05",
+  "description": "Pinned upstream LibreOffice WebAssembly runtime; documents remain on this machine.",
+  "sources": [
+    {
+      "name": "ZetaOffice / LibreOffice WebAssembly",
+      "source": "https://git.libreoffice.org/core/+/refs/heads/distro/allotropia/zeta-24-2",
+      "license": "LibreOffice and bundled dependencies retain their upstream licenses",
+      "notice": "https://www.libreoffice.org/about-us/licenses/"
+    },
+    {
+      "name": "ZetaJS",
+      "source": "https://github.com/allotropia/zetajs/tree/db1134821d2a1bbfa4897bf12e3e933a371527a1",
+      "license": "MIT",
+      "notice": "https://github.com/allotropia/zetajs/blob/db1134821d2a1bbfa4897bf12e3e933a371527a1/LICENSE",
+      "license_text": "MIT License\n\nCopyright (c) 2024 allotropia software GmbH and contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+    }
+  ],
+  "assets": [
+    {
+      "name": "soffice.js",
+      "file": "soffice.js",
+      "bytes": 858124,
+      "sha256": "5143e5354f470b87f86ba272bcfef857bd13e6f07b59666e48a7ccb89643cd77",
+      "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.js",
+      "media_type": "text/javascript"
+    },
+    {
+      "name": "soffice.data.js.metadata",
+      "file": "soffice.data.js.metadata",
+      "bytes": 215180,
+      "sha256": "5d9d909d0b9b38443c0f19704032d0fc12d654f6c9c24c2c3b237739c4848ae3",
+      "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.data.js.metadata",
+      "media_type": "application/json"
+    },
+    {
+      "name": "soffice.wasm",
+      "file": "soffice.wasm.br",
+      "bytes": 36279250,
+      "sha256": "a11808aaba3c9a4412a865bde645247fd9d0b262b5baa0680a9fced29a8656e4",
+      "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.wasm",
+      "media_type": "application/wasm",
+      "encoding": "br"
+    },
+    {
+      "name": "soffice.data",
+      "file": "soffice.data.br",
+      "bytes": 15891013,
+      "sha256": "9d3c1cf3c904ce570905052ba6844f3383fde93ad1267b65a3ae4b236db2fd05",
+      "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.data",
+      "media_type": "application/octet-stream",
+      "encoding": "br"
+    },
+    {
+      "name": "zeta.js",
+      "file": "zeta.js",
+      "bytes": 42951,
+      "sha256": "ee633709bfa1de3221e8f68beb395f68fd5ff00cab9e33ba22e97e8271b348b4",
+      "url": "https://raw.githubusercontent.com/allotropia/zetajs/db1134821d2a1bbfa4897bf12e3e933a371527a1/source/zeta.js",
+      "media_type": "text/javascript"
+    }
+  ]
+}

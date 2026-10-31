@@ -1,0 +1,93 @@
+.docx-reader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.docx-mode-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.docx-frame-surface {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+/* Cancel the world's CSS scale before Writer renders, rather than stretching
+   its bitmap. The iframe viewport tracks the card's actual screen size. */
+.docx-edit-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  transform-origin: 0 0;
+  border: 0;
+  background: var(--surface-subtle);
+}
+.docx-mode-switch {
+  display: flex;
+  gap: 2px;
+}
+.docx-mode-switch button,
+.docx-save {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 3px;
+  padding: 4px 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.docx-mode-switch button[aria-pressed='true'] {
+  background: var(--selection);
+  color: var(--text);
+}
+.docx-mode-switch button:hover,
+.docx-save:hover:enabled {
+  background: var(--hover);
+  color: var(--text);
+}
+.docx-save-state {
+  margin-left: auto;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.docx-save {
+  color: var(--text);
+}
+.docx-reader > .reader-error {
+  margin: 0;
+}
+.docx-alert {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.docx-alert > span {
+  flex: 1;
+  min-width: 160px;
+}
+.docx-alert .text-btn {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.docx-edit-controls button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+.docx-edit-controls button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.docx-reader > .reader-status {
+  margin: 0;
+  background: var(--surface);
+  color: var(--muted);
+}

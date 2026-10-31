@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PDM_AGENT_ENABLED: "0"
+  UV_PROJECT_ENVIRONMENT: .venv
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.12.6"
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12
+      - run: uv run --frozen --no-sync ruff check backend scripts tests
+      - run: uv run --frozen --no-sync ruff format --check backend scripts tests
+      - run: uv run --frozen --no-sync pytest -q
+      - run: uv run --frozen --no-sync python scripts/smoke_mcp.py
+      - run: uv run --frozen --no-sync python scripts/check_release.py
+      - run: uv build
+      - run: uv run --frozen --no-sync python scripts/smoke_package.py
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          package_json_file: frontend/package.json
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.12.6"
+          enable-cache: true
+      - run: uv sync --frozen --python 3.12
+      - run: pnpm --dir frontend install --frozen-lockfile
+      - run: pnpm --dir frontend format:check
+      - run: pnpm --dir frontend test:unit
+      - run: pnpm --dir frontend build
+      - name: Verify the public source can be installed independently
+        run: |
+          uv build
+          uv run --frozen --no-sync python scripts/smoke_source.py
+      - name: Install verified Writer runtime for document journeys
+        run: uv run --frozen --no-sync python scripts/setup-office-runtime.py --if-missing
+      - run: pnpm --dir frontend exec playwright install --with-deps chromium
+      - run: pnpm --dir frontend test:e2e
+      - name: Retain synthetic test diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: browser-diagnostics
+          path: frontend/test-results/
+          retention-days: 7

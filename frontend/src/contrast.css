@@ -1,0 +1,119 @@
+/* Strong boundaries for controls and cards; quieter rules for content dividers. */
+.app-shell.space-app {
+  --rail-surface: var(--sidebar);
+}
+input:not([type='checkbox']):not([type='radio']),
+select,
+textarea {
+  border-color: var(--border-strong);
+}
+.btn.subtle,
+.segmented,
+.work-view-switch,
+.chat-compose form {
+  border-color: var(--border-strong);
+}
+.space-panel,
+.modal,
+.codex-chat,
+.space-breadcrumb,
+.space-search,
+.space-utilities,
+.space-zoom,
+.work-info-panel,
+.work-menu-items {
+  border-color: var(--border-strong);
+}
+.space-node {
+  border-left-color: var(--border-strong);
+  border-right-color: var(--border-strong);
+  border-bottom-color: var(--border-strong);
+  box-shadow: var(--card-shadow);
+}
+.wb-card {
+  border-color: var(--border-strong);
+  box-shadow: var(--card-shadow);
+}
+.wb-card-heading,
+.work-header,
+.wb-toolbar,
+.space-panel-heading,
+.chat-heading {
+  background: var(--surface-raised);
+}
+.wb-note {
+  border-top-color: var(--note-marker);
+}
+.wb-connections {
+  color: var(--edge);
+}
+.wb-connections line:not(.wb-edge-hit) {
+  stroke-width: 2;
+}
+.wb-connections .selected {
+  color: var(--focus);
+}
+.wb-card.is-connecting {
+  outline-color: var(--focus);
+}
+.space-rail-link.active {
+  background: var(--selection);
+  color: var(--selected-text);
+  box-shadow: inset 3px 0 var(--focus);
+  font-weight: 600;
+}
+.wb-toolbar .text-btn {
+  color: var(--text);
+  font-weight: 500;
+  padding: 3px 5px;
+  border-radius: 4px;
+}
+.wb-toolbar .text-btn:hover {
+  background: var(--hover);
+}
+.wb-toolbar [aria-pressed='true'],
+.space-utilities > button.active,
+.work-view-switch button[aria-pressed='true'] {
+  background: var(--selection);
+  color: var(--selected-text);
+  box-shadow: inset 0 -2px var(--focus);
+}
+.work-view-switch button[aria-pressed='true'] {
+  font-weight: 600;
+}
+.space-grip {
+  color: var(--muted);
+}
+.space-node.is-done b {
+  color: var(--muted);
+}
+.step-form,
+.step-edit,
+.work-upload,
+.chat-empty button,
+.chat-proposals > button {
+  border-color: var(--border-strong);
+}
+.wb-bottom > span {
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+.reader-controls {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+.reader-sheet {
+  color: var(--text);
+  background: var(--surface);
+}
+.reader-sheet th,
+.reader-sheet td {
+  border-color: var(--border);
+}
+.reader-sheet th {
+  color: var(--text);
+  background: var(--control);
+}
+.reader-sheet tr:hover td {
+  background: var(--surface-subtle);
+}

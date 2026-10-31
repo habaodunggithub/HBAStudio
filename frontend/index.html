@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e9edf2" />
+    <meta name="description" content="Không gian cá nhân cho công việc, học tập và thời gian." />
+    <script>
+      try {
+        var m = localStorage.getItem('pdm-theme')
+        var d =
+          m === 'dark' || (m !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = d ? 'dark' : 'light'
+        document.documentElement.style.colorScheme = d ? 'dark' : 'light'
+      } catch (e) {}
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/hba-icon.svg" />
+    <link rel="apple-touch-icon" href="/hba-icon.svg" />
+    <meta name="application-name" content="HBA Studio" />
+    <title>HBA Studio · Không gian công việc cá nhân</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

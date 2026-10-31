@@ -1,0 +1,47 @@
+# Local accounts, personal data and historical evidence
+.private/
+.codex/
+.env
+.env.*
+!.env.example
+**/client_secret*.json
+**/google-client.json
+**/google-token.json
+**/codex-connection.json
+**/local-token
+**/auth.json
+*.pem
+*.key
+*.sqlite*
+*.db*
+uploads/
+backups/
+
+# Dependencies and generated files
+node_modules/
+dist/
+build/
+*.egg-info/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+coverage.xml
+playwright-report/
+test-results/
+.cache/
+*.tsbuildinfo
+*.log
+*.zip
+*.tar.gz
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp

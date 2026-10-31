@@ -1,0 +1,135 @@
+import { test, expect, Page } from './fixtures'
+import { legacyPreferences } from './legacy'
+
+test.beforeEach(async ({ page }) => {
+  await legacyPreferences(page)
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('/#space')
+  await expect(page.getByRole('heading', { name: 'Các môn học', exact: true })).toBeVisible()
+})
+async function options(page: Page) {
+  const close = page.locator('.space-panel-close')
+  if (await close.isVisible()) await close.click()
+  await page.getByRole('button', { name: 'Tùy chọn không gian', exact: true }).click()
+}
+
+test('theme survives reload, covers calendar and follows system changes', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', (e) => errors.push(e.message))
+  await page.getByRole('button', { name: 'Chuyển sang giao diện tối' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 11, 11)')
+  await page.getByRole('button', { name: 'Lịch của tôi', exact: true }).click()
+  await expect(page.locator('.calendar-panel').getByRole('table').first()).toBeVisible()
+  await expect(page.locator('.calendar-panel')).toHaveCSS('background-color', 'rgb(34, 34, 34)')
+  await page.screenshot({ path: 'test-results/calendar-dark.png' })
+  await options(page)
+  await page.getByRole('tab', { name: 'Giao diện', exact: true }).click()
+  await expect(page.getByRole('radio', { name: 'Tối', exact: true })).toBeChecked()
+  await page.getByRole('radio', { name: 'Sáng', exact: true }).check()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.getByRole('radio', { name: 'Theo hệ thống', exact: true }).check()
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.reload()
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  expect(errors).toEqual([])
+})
+
+test('all-work canvas and focused options replace the old management pages', async ({ page }) => {
+  await page.getByRole('button', { name: 'Xem tất cả công việc', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Việc cần làm', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Thêm công việc', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Thêm deadline', exact: true })).toBeVisible()
+  await expect(page.getByLabel('Các mục khác', { exact: true })).toHaveCount(0)
+  await options(page)
+  await expect(page.getByRole('heading', { name: 'Khối lượng & nhắc việc' })).toBeVisible()
+  await expect(page.getByText('Nhắc trước buổi làm (phút)', { exact: true })).not.toBeVisible()
+  await page.getByRole('tab', { name: 'Tài liệu', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Nguồn tài liệu' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Lưu cài đặt', exact: true })).not.toBeVisible()
+  await page.getByText('Tìm kiếm theo ngữ nghĩa', { exact: true }).click()
+  await expect(page.getByRole('checkbox', { name: 'Bật tìm kiếm ngữ nghĩa' })).toBeVisible()
+  await page.getByRole('tab', { name: 'Google Calendar', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Kết nối Google', exact: true })).toBeVisible()
+  await page.getByRole('tab', { name: 'Tài khoản & kết nối', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Kết nối công cụ của bạn.' })).toBeVisible()
+  await page.getByRole('tab', { name: 'Sao lưu', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Sao lưu ngay', exact: true })).toBeVisible()
+  await expect(page).toHaveURL(/#space\/work$/)
+})
+
+test('manual work logging opens a fresh form and contributes to progress', async ({ page }) => {
+  const result = await page.request.post('/api/v1/tasks', {
+    data: { title: 'Việc ghi thời gian kiểm thử', estimate_minutes: 60 },
+  })
+  expect(result.ok()).toBeTruthy()
+  const task = await result.json()
+  await page.reload()
+  await page.getByRole('button', { name: 'Xem tất cả công việc', exact: true }).click()
+  await page.getByRole('button', { name: 'Tìm trong không gian', exact: true }).click()
+  await page.getByLabel('Tìm môn học hoặc deadline').fill(task.title)
+  await page.getByRole('button', { name: 'Vừa không gian', exact: true }).click()
+  await page.getByRole('button', { name: 'Sửa ' + task.title, exact: true }).click()
+  let dialog = page.getByRole('dialog', { name: 'Sửa công việc', exact: true })
+  await expect(dialog.getByLabel('Đồ án / bài tập')).not.toBeVisible()
+  await dialog.getByRole('button', { name: 'Ghi thời gian', exact: true }).click()
+  dialog = page.getByRole('dialog', { name: 'Thêm thời gian đã làm', exact: true })
+  await expect(dialog.getByRole('combobox', { name: 'Công việc', exact: true })).toHaveValue(
+    task.id,
+  )
+  await dialog.getByLabel('Số phút đã làm').fill('25')
+  await dialog.getByRole('button', { name: 'Lưu', exact: true }).click()
+  await expect(dialog).not.toBeVisible()
+  const workspace = await (await page.request.get('/api/v1/workspace')).json()
+  expect(
+    workspace.sessions.some((s: any) => s.task_id === task.id && s.minutes === 25),
+  ).toBeTruthy()
+})
+
+test('dark mobile canvas, forms, settings and calendar keep controls visible', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: 'Chuyển sang giao diện tối' }).click()
+  await page.screenshot({ path: 'test-results/space-dark-mobile.png' })
+  await page.getByRole('button', { name: 'Xem tất cả công việc', exact: true }).click()
+  await page.getByRole('button', { name: 'Thêm công việc', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Thêm công việc', exact: true })
+  await dialog.getByText('Thông tin thêm', { exact: true }).click()
+  await expect(dialog.getByLabel('Cần hoàn thành trước công việc này')).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy()
+  await page.screenshot({ path: 'test-results/task-form-dark-mobile.png' })
+  await dialog.getByRole('button', { name: 'Đóng', exact: true }).click()
+  await options(page)
+  await page.getByRole('tab', { name: 'Giao diện', exact: true }).click()
+  await expect(page.getByRole('radio', { name: 'Tối', exact: true })).toBeChecked()
+  expect(
+    await page.locator('.space-panel-body').evaluate((el) => el.scrollWidth <= el.clientWidth),
+  ).toBeTruthy()
+  await page.screenshot({ path: 'test-results/settings-dark-mobile.png' })
+  await page.locator('.space-panel-close').click()
+  await page.getByRole('button', { name: 'Lịch của tôi', exact: true }).click()
+  await expect(page.locator('.calendar-panel').getByRole('table').first()).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy()
+  await page.screenshot({ path: 'test-results/calendar-dark-mobile.png' })
+})
+
+test('the in-space guide downloads as a complete Markdown file', async ({ page }) => {
+  await options(page)
+  const downloaded = page.waitForEvent('download')
+  await page.getByRole('link', { name: 'Hướng dẫn sử dụng', exact: true }).click()
+  const download = await downloaded
+  expect(download.suggestedFilename()).toBe('huong-dan-su-dung.md')
+  expect(await download.failure()).toBeNull()
+  const response = await page.request.get('/huong-dan-su-dung.md')
+  expect(response.ok()).toBeTruthy()
+  const guide = await response.text()
+  expect(guide).toContain('# Hướng dẫn sử dụng HBA Studio')
+  expect(guide).toContain('Không gian → Tùy chọn → Giao diện')
+  expect(guide).toContain('scripts/restore.sh')
+  expect(guide).not.toContain('<!doctype html>')
+})

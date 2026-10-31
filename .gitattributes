@@ -1,0 +1,11 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.ttf binary
+*.woff2 binary
+.private/ export-ignore
+.codex/ export-ignore
+.env export-ignore

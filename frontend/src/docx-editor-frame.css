@@ -1,0 +1,157 @@
+:root {
+  color-scheme: light;
+  --chrome: #fafafa;
+  --border: #c7c7c7;
+  --text: #202020;
+  --hover: #e6e6e6;
+  --selected: #dcebe3;
+}
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --chrome: #202020;
+  --border: #525252;
+  --text: #f3f3f3;
+  --hover: #373737;
+  --selected: #365345;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font:
+    12px system-ui,
+    sans-serif;
+  color: var(--text);
+  background: var(--chrome);
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+#toolbar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: nowrap;
+  flex: none;
+  zoom: var(--board-scale, 1);
+  height: 42px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--border);
+  background: var(--chrome);
+}
+#toolbar[hidden] {
+  display: none;
+}
+#toolbar button,
+#toolbar select {
+  flex: 0 0 auto;
+  height: 27px;
+  max-width: 136px;
+  min-width: 27px;
+  padding: 3px 6px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+#toolbar select {
+  appearance: none;
+  border-color: var(--border);
+  max-width: 128px;
+  padding-right: 20px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    calc(100% - 10px) center,
+    calc(100% - 6px) center;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+}
+#toolbar select[aria-label='Cỡ chữ'] {
+  width: 51px;
+}
+#toolbar button {
+  cursor: pointer;
+  font-weight: 600;
+}
+#toolbar button:hover:enabled {
+  background: var(--hover);
+}
+#toolbar button:disabled,
+#toolbar select:disabled {
+  opacity: 0.45;
+}
+#toolbar button[aria-pressed='true'] {
+  background: var(--selected);
+  border-color: var(--border);
+}
+#toolbar button:focus-visible,
+#toolbar select:focus-visible {
+  outline: 2px solid #4b9270;
+  outline-offset: 1px;
+}
+#toolbar button[data-command='Italic'] {
+  font-style: italic;
+}
+#toolbar button[data-command='Underline'] {
+  text-decoration: underline;
+}
+#surface {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background: #b8b8b8;
+}
+/* Qt fullscreen assigns inline fixed positioning. Contain its canvas in the
+   document surface so the toolbar and pointer coordinates remain aligned. */
+#qtcanvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0;
+  display: block;
+}
+/* A real, focusable IME input context. Never display:none/offscreen: OS input
+   methods need its selection and position. Writer paints the text and caret. */
+#writer-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  resize: none;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  font: 16px sans-serif;
+}
+#loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--chrome);
+  color: var(--text);
+  z-index: 1;
+}
+#loading[hidden] {
+  display: none;
+}

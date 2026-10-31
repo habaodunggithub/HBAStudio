@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self' blob: data:;"
+    />
+    <title>LibreOffice Writer · HBA Studio</title>
+  </head>
+  <body>
+    <div id="toolbar" role="toolbar" aria-label="Định dạng tài liệu"></div>
+    <main id="surface">
+      <canvas
+        id="qtcanvas"
+        contenteditable="true"
+        role="textbox"
+        aria-label="Nội dung tài liệu Word"
+        aria-multiline="true"
+        tabindex="0"
+      ></canvas>
+      <div id="loading" role="status">Đang mở LibreOffice Writer…</div>
+    </main>
+    <script type="module" src="/src/docx-editor-frame.ts"></script>
+  </body>
+</html>

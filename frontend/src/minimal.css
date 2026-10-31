@@ -1,0 +1,332 @@
+@font-face {
+  font-family: Itim;
+  src: url('./assets/fonts/Itim-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* Quiet surfaces, regular type, and one clear primary action per area. */
+h1 {
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: -0.7px;
+}
+h2 {
+  font-size: 15px;
+  font-weight: 600;
+}
+.brand {
+  font-family: Itim, sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.6px;
+}
+.brand-mark {
+  background: transparent;
+  width: 27px;
+  height: 27px;
+}
+.workspace-label {
+  margin-top: 30px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+}
+.sidebar {
+  padding-top: 22px;
+}
+.nav-item {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 13px;
+}
+.nav-item.active {
+  box-shadow: none;
+  font-weight: 500;
+}
+.nav-item:last-child {
+  margin-top: 9px;
+}
+.topbar {
+  border-bottom-color: var(--border);
+}
+.page-content {
+  max-width: 1220px;
+  padding: 34px 42px 45px;
+}
+.page-header {
+  margin-bottom: 25px;
+  gap: 20px;
+}
+.page-header p {
+  font-size: 12px;
+}
+.btn {
+  min-height: 35px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+.btn.subtle {
+  background: transparent;
+  border-color: var(--border);
+}
+.btn.subtle:hover {
+  background: var(--hover);
+}
+.icon-btn {
+  border-radius: 5px;
+}
+.section-heading {
+  background: transparent;
+  padding: 17px 20px;
+}
+.section-heading p {
+  margin-top: 4px;
+}
+.panel {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.panel .panel {
+  box-shadow: none;
+}
+.panel .work-related {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.task-row {
+  min-height: 65px;
+}
+.task-main small {
+  font-size: 11px;
+}
+.page-tabs {
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.page-tabs > button {
+  font-size: 13px;
+}
+.page-tabs > button[aria-selected='true'] {
+  border-bottom-color: var(--text);
+}
+.task-priority-disclosure {
+  margin: 0 0 24px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+.task-priority-disclosure > summary {
+  padding: 0 0 14px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.task-priority-disclosure[open] > summary {
+  border-bottom: 0;
+}
+.task-priority-disclosure .priority-card {
+  padding: 13px 0;
+}
+.today-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  align-items: start;
+  gap: 45px;
+  margin-bottom: 30px;
+}
+.today-date {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.today-intro h1 {
+  font-size: 29px;
+}
+.today-description {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 10px 0 19px;
+  line-height: 1.7;
+}
+.deadline-note {
+  padding: 3px 0 3px 22px;
+  border-left: 1px solid var(--border);
+}
+.deadline-note-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.deadline-note-heading h2 {
+  font-size: 11px;
+  font-weight: 500;
+}
+.deadline-note-heading > svg {
+  width: 13px;
+  height: 13px;
+}
+.deadline-note-title {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.7;
+}
+.deadline-note > p {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 4px;
+}
+.deadline-note > .text-btn {
+  margin-top: 7px;
+  font-size: 11px;
+}
+.deadline-note-empty {
+  color: var(--muted);
+}
+.summary-strip {
+  gap: 12px 26px;
+  padding-bottom: 23px;
+  font-size: 12px;
+}
+.summary-strip b {
+  font-weight: 500;
+}
+.alert.success {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 45;
+  width: max-content;
+  max-width: min(480px, calc(100vw - 32px));
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  border-color: var(--border);
+}
+.alert.success svg {
+  color: var(--muted);
+}
+body:has(.focus-bar) .alert.success {
+  bottom: 110px;
+}
+.modal-heading .eyebrow {
+  display: none;
+}
+.modal-heading h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+.modal {
+  box-shadow: 0 16px 60px #0003;
+}
+.modal-footer .btn {
+  min-height: 36px;
+}
+.course-card,
+.disclosure,
+.settings-nav > button,
+.theme-option {
+  border-radius: 7px;
+}
+.course-card {
+  box-shadow: none;
+}
+.settings-nav > button {
+  font-size: 12px;
+}
+.calendar-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+.calendar-layout.with-colors {
+  grid-template-columns: minmax(0, 1fr) 190px;
+}
+.calendar-panel {
+  padding: 15px;
+}
+.calendar-panel h2 {
+  font-size: 16px !important;
+}
+.calendar-colors {
+  padding: 2px 0;
+}
+.focus-bar {
+  padding: 12px 16px;
+  box-shadow: var(--shadow);
+}
+@media (max-width: 1100px) {
+  .page-content {
+    padding: 28px;
+  }
+  .today-header {
+    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) 250px;
+  }
+}
+@media (max-width: 900px) {
+  .today-header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .deadline-note {
+    padding-left: 15px;
+  }
+  .calendar-layout.with-colors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .page-content {
+    padding: 24px 18px 35px;
+  }
+  .page-header {
+    align-items: flex-start;
+    gap: 17px;
+  }
+  .page-header h1 {
+    font-size: 25px;
+  }
+  .header-actions {
+    gap: 7px;
+  }
+  .page-header .btn {
+    font-size: 12px;
+  }
+  .today-header {
+    gap: 23px;
+    margin-bottom: 25px;
+  }
+  .today-intro h1 {
+    font-size: 27px;
+  }
+  .summary-strip {
+    font-size: 11px;
+    gap: 8px 18px;
+  }
+  .alert.success {
+    right: 16px;
+    bottom: 16px;
+    padding: 11px 12px;
+    gap: 8px;
+  }
+  .calendar-panel {
+    padding: 9px;
+  }
+  .calendar-panel h2 {
+    font-size: 14px !important;
+  }
+  .work-header-actions .btn {
+    min-height: 36px;
+  }
+}

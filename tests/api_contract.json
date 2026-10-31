@@ -1,0 +1,238 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/backups"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/backups"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/backups/{name}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/bootstrap"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/calendar"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/calendar/colors"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/calendar/{kind}/{ident}/move"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/canvas/{ident}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/canvas/{ident}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/canvas/{ident}/arrange"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/changes"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/chat/threads"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/chat/threads"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/chat/threads/{ident}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/chat/threads/{ident}/interrupt"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/chat/threads/{ident}/messages"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/context"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/google/authorize"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/google/calendars"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/google/callback"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/google/config"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/google/conflicts/{ident}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/google/connection"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/google/selection"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/google/sync"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/google/sync-options"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/health"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/knowledge/documents/{ident}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/knowledge/documents/{ident}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/knowledge/documents/{ident}/content"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/knowledge/documents/{ident}/content"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/knowledge/documents/{ident}/docx"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/knowledge/documents/{ident}/docx"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/knowledge/documents/{ident}/file"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/knowledge/documents/{ident}/spreadsheet"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/knowledge/excerpts/{ident}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/knowledge/model"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/knowledge/scan"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/knowledge/search"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/knowledge/sources"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/knowledge/sources/{ident}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/knowledge/upload"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/office/runtime"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/plans/preview"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/priorities"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/proposals"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/proposals/{ident}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/proposals/{ident}/apply"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/proposals/{ident}/reject"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/revisions/{ident}/undo"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/settings"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/workspace"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/workspaces/{kind}/{ident}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/workspaces/{kind}/{ident}/analyze"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/{kind}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/{kind}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/{kind}/{ident}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/{kind}/{ident}"
+  },
+  {
+    "method": "GET",
+    "path": "/office-runtime/{name}"
+  }
+]
