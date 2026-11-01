@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve document rows while indexing so workspace polling does not reorder
+  open reader cards and restart the Writer iframe during initialization or edits.
+
 - Prepare HBA Studio as an MIT-licensed source project with English/Vietnamese
   getting-started documentation and contributor guidance.
 - Split HTTP endpoints into feature routers while preserving existing paths;

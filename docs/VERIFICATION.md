@@ -1,8 +1,8 @@
 # Verification: open-source preparation
 
 Verified on **2026-11-01** (Asia/Ho_Chi_Minh), on Linux with Python 3.12.14,
-uv 0.12.6, Node.js 22.23.2 and pnpm 11.24.0. These results describe local runs;
-the new GitHub Actions workflow has not yet run on a published repository.
+uv 0.12.6, Node.js 22.23.2 and pnpm 11.24.0. The table below records the initial local runs.
+The subsequent GitHub CI failure and its fix are recorded in the final section.
 
 | Check | Result |
 | --- | --- |
@@ -62,7 +62,8 @@ The original OAuth file and historical QA/screenshots are preserved locally unde
 the ignored `.private/` directory. Original source files also have a separate
 local backup. Personal application databases, accounts and registered source
 files were not modified by the test runs. No schema migration was introduced.
-The Git repository is initialized on `main`; no commit, remote or push was created.
+At the end of initial preparation, Git was initialized on `main`; publishing
+was performed separately afterward.
 
 The publication guard is a limited filename/content-pattern check. It is not proof
 that arbitrary future files contain no private information. Review the staged
@@ -81,3 +82,41 @@ diff and binary assets before publication, as described in [RELEASING.md](RELEAS
 - Optional Office download URLs include an upstream moving CDN URL. Fresh downloads
   matched the recorded pins during this run; later upstream changes intentionally
   fail integrity checks rather than silently changing executable assets.
+
+
+## 2026-11-01: Writer startup regression on GitHub CI
+
+The first [main-branch CI run](https://github.com/habaodunggithub/HBAStudio/actions/runs/41229100924)
+passed 68 browser tests and failed three Writer cases: Retry observed three runtime
+starts rather than two, and opening two other documents remained stuck loading.
+Downloaded CI traces show the same iframe/session navigating again while Writer
+was starting, followed by WASM initialization waiting indefinitely.
+
+Reindexing removed and reinserted the `Document` row together with its chunks.
+This changed document order in workspace responses. Polling could then reorder a
+React card containing an iframe, reloading its browsing context. This is consistent
+with the [documented iframe-state behavior of DOM moves](https://developer.mozilla.org/en-US/docs/Web/API/Element/moveBefore#description).
+A backend regression test failed on the old implementation because both SQLite
+row IDs and workspace document order changed after indexing.
+
+Indexing now replaces only the chunks/FTS entries and updates the existing document
+row in place. Initial indexing and later reindexing preserve row identity, document
+IDs, workspace links and card order. Explicit document removal still deletes the
+record and its chunks. No database migration is required.
+
+Verification of the fix:
+
+- 145 backend tests passed, including pending/previously indexed documents,
+  unchanged row IDs/order, replaced search results and retained workspace links.
+- Frontend build, formatting checks, seven unit tests and the publication guard passed.
+- All 12 existing Office journeys passed twice: 24 executions, with the original
+  Retry assertion and readiness limits unchanged.
+- The three formerly failing cases and a new active-editor reindex regression
+  passed twice with the test process tree restricted to two CPUs: eight executions.
+- The new browser regression verifies iframe/model continuity across a real
+  workspace poll, retained unsaved state, and rejection of a stale save without
+  overwriting the externally updated DOCX.
+
+These are local results. Remote CI for this fix must be verified after its commit
+is pushed; they are not a claim that a new GitHub run has already passed. Tests
+continue to use temporary data and the immutable optional Writer runtime.

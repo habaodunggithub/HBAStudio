@@ -1,5 +1,6 @@
 from pathlib import Path
-from sqlalchemy import select
+import pytest
+from sqlalchemy import select, text
 from backend import knowledge, backups, config
 from backend.db import Session, transaction
 from backend.models import KnowledgeSource, Document, DocumentChunk
@@ -26,6 +27,39 @@ def test_changed_file_replaces_chunks(tmp_path):
     assert knowledge.ingest(file) == ident
     assert not knowledge.search("alpha")["hits"]
     assert knowledge.search("beta")["hits"][0]["chunk_id"] != before
+
+
+@pytest.mark.parametrize("preindexed", [False, True])
+def test_reindex_preserves_document_rows_and_workspace_card_order(client, tmp_path, preindexed):
+    task = create(client, "tasks", title="Workspace with an open reader")
+    files = [tmp_path / name for name in ("first.md", "second.md")]
+    for path in files:
+        path.write_text("alpha original content")
+    if preindexed:
+        ids = [knowledge.ingest(path) for path in files]
+    else:
+        ids = [path.stem for path in files]
+        with transaction() as session:
+            for ident, path in zip(ids, files):
+                session.add(Document(id=ident, data={"path": str(path), "title": path.name, "status": "pending"}))
+    with transaction() as session:
+        for ident in ids:
+            doc = session.get(Document, ident)
+            doc.data = {**doc.data, "work_kind": "tasks", "work_id": task["id"]}
+
+    def rows():
+        with Session() as session:
+            return list(session.execute(text("SELECT rowid, id FROM documents ORDER BY rowid")))
+
+    before = rows()
+    for path in files:
+        path.write_text("beta replacement content")
+        knowledge.ingest(path)
+        assert rows() == before
+        detail = client.get(f"/api/v1/workspaces/tasks/{task['id']}").json()
+        assert [doc["id"] for doc in detail["documents"]] == ids
+    assert not knowledge.search("alpha")["hits"]
+    assert {hit["document_id"] for hit in knowledge.search("beta")["hits"]} == set(ids)
 
 
 def test_scan_deleted_symlink_and_missing_root(tmp_path):

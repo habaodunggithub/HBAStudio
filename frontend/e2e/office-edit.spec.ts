@@ -1,7 +1,7 @@
 import { test, expect, type Page, type Locator } from './fixtures'
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
-async function setup(page: Page) {
+async function setup(page: Page, documentFirst = false) {
   await page.addInitScript(() => {
     localStorage.setItem('pdm-chat-open', 'false')
     localStorage.setItem('pdm-theme', 'light')
@@ -12,7 +12,8 @@ async function setup(page: Page) {
     await page.request.post('/api/v1/tasks', { data: { title: 'Tài liệu có thể chỉnh sửa' } })
   ).json()
   const docs: any[] = []
-  for (const ext of ['pdf', 'docx']) {
+  const formats = documentFirst ? ['docx', 'pdf'] : ['pdf', 'docx']
+  for (const ext of formats) {
     const upload = await page.request.post('/api/v1/knowledge/upload', {
       multipart: {
         work_kind: 'tasks',
@@ -28,15 +29,17 @@ async function setup(page: Page) {
     })
     docs.push(await upload.json())
   }
+  const pdf = docs[formats.indexOf('pdf')]
+  const docx = docs[formats.indexOf('docx')]
   await page.request.patch('/api/v1/canvas/work:tasks:' + work.id, {
     data: {
       nodes: {
-        ['document:' + docs[0].id]: { x: 0, y: 0 },
-        ['document:' + docs[1].id]: { x: 650, y: 0 },
+        ['document:' + pdf.id]: { x: 0, y: 0 },
+        ['document:' + docx.id]: { x: 650, y: 0 },
       },
       sizes: {
-        ['document:' + docs[0].id]: { width: 600, height: 750 },
-        ['document:' + docs[1].id]: { width: 650, height: 750 },
+        ['document:' + pdf.id]: { width: 600, height: 750 },
+        ['document:' + docx.id]: { width: 650, height: 750 },
       },
       hidden: ['steps'],
       camera: { x: 20, y: 20, zoom: 1 },
@@ -44,9 +47,9 @@ async function setup(page: Page) {
   })
   await page.goto('/#workspace/tasks/' + work.id)
   return {
-    pdf: page.locator('[data-board-card="document:' + docs[0].id + '"]'),
-    docx: page.locator('[data-board-card="document:' + docs[1].id + '"]'),
-    doc: docs[1],
+    pdf: page.locator('[data-board-card="document:' + pdf.id + '"]'),
+    docx: page.locator('[data-board-card="document:' + docx.id + '"]'),
+    doc: docx,
     work,
   }
 }
@@ -227,6 +230,55 @@ test('DOCX opens Writer inside its card and switches preview and edit without re
   expect(actual.text).not.toContain('_previewmustnotedit')
   await page.screenshot({ path: 'test-results/docx-editor-first.png' })
   expect(errors).toEqual([])
+})
+
+test('reindexing an open DOCX preserves its iframe, unsaved edits and conflict protection', async ({
+  page,
+}) => {
+  test.setTimeout(120000)
+  await page.setViewportSize({ width: 1798, height: 1025 })
+  const { docx, doc, work } = await setup(page, true)
+  const contextPath = '/api/v1/workspaces/tasks/' + work.id
+  await expect
+    .poll(
+      async () => {
+        const detail = await (await page.request.get(contextPath)).json()
+        return detail.documents.every((item: any) => item.status === 'ready')
+      },
+      { timeout: 15000 },
+    )
+    .toBe(true)
+  await openWriter(docx)
+  await insertAtStart(page, docx, 'unsavedreindexregression ')
+  await nativeCanvas(docx).evaluate((canvas) =>
+    canvas.setAttribute('data-reindex-marker', 'original-writer'),
+  )
+  const before = await (await page.request.get(contextPath)).json()
+  const endpoint = '/api/v1/knowledge/documents/' + doc.id + '/docx'
+  const original = await page.request.get(endpoint)
+  const replacement = readFileSync('e2e/fixtures/board-reader.docx')
+  const saved = await page.request.put(endpoint, {
+    multipart: {
+      revision: original.headers()['x-document-revision'],
+      file: {
+        name: 'board-reader.docx',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        buffer: replacement,
+      },
+    },
+  })
+  expect(saved.ok()).toBeTruthy()
+  const after = await (await page.request.get(contextPath)).json()
+  expect(after.documents.map((item: any) => item.id)).toEqual(
+    before.documents.map((item: any) => item.id),
+  )
+  // Wait for the actual workspace poll that previously moved the iframe's card.
+  await page.waitForResponse((response) => new URL(response.url()).pathname === contextPath)
+  await expect(nativeCanvas(docx)).toHaveAttribute('data-reindex-marker', 'original-writer')
+  await expect(docx.locator('.docx-save-state')).toHaveText('Chưa lưu')
+  await docx.getByRole('button', { name: 'Lưu', exact: true }).click()
+  await expect(docx.getByRole('alert')).toContainText('File đã thay đổi ở nơi khác')
+  expect(await (await page.request.get(endpoint)).body()).toEqual(replacement)
 })
 
 test('Writer Retry replaces a failed engine and opens the document in a fresh iframe', async ({

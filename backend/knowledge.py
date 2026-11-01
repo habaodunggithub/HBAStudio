@@ -213,10 +213,14 @@ def chunks(pages):
                 yield location, part
 
 
-def remove_document(s, doc):
+def _remove_chunks(s, doc):
     for c in s.scalars(select(DocumentChunk).where(DocumentChunk.document_id == doc.id)):
         s.execute(text("DELETE FROM chunks_fts WHERE chunk_id=:id"), {"id": c.id})
         s.delete(c)
+
+
+def remove_document(s, doc):
+    _remove_chunks(s, doc)
     s.delete(doc)
 
 
@@ -247,25 +251,26 @@ def _ingest(path, source_id=None, course_id=None, project_id=None, doc_id=None):
         old = s.get(Document, ident)
         old_data = old.data.copy() if old else {}
         if old:
-            remove_document(s, old)
+            # Keep the document row and its position in workspace responses.
+            # Deleting/reinserting it reorders cards while ingestion runs;
+            # moving a mounted iframe in the DOM reloads its Writer runtime.
+            _remove_chunks(s, old)
             s.flush()
-        doc = Document(
-            id=ident,
-            data={
-                **old_data,
-                "title": old_data.get("title", path.name),
-                "path": str(path),
-                "source_id": source_id,
-                "course_id": course_id or old_data.get("course_id"),
-                "project_id": project_id or old_data.get("project_id"),
-                "hash": digest,
-                "status": "error" if error else "ready",
-                "error": error,
-                "unavailable": False,
-                "indexed_at": now(),
-                "chunks": len(parts),
-            },
-        )
+        doc = old if old is not None else Document(id=ident)
+        doc.data = {
+            **old_data,
+            "title": old_data.get("title", path.name),
+            "path": str(path),
+            "source_id": source_id,
+            "course_id": course_id or old_data.get("course_id"),
+            "project_id": project_id or old_data.get("project_id"),
+            "hash": digest,
+            "status": "error" if error else "ready",
+            "error": error,
+            "unavailable": False,
+            "indexed_at": now(),
+            "chunks": len(parts),
+        }
         s.add(doc)
         for location, content in parts:
             c = DocumentChunk(id=uid(), document_id=ident, text=content, location=location)
