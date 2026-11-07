@@ -21,7 +21,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "temporal-polyfill": "^1.0.6"
+    "temporal-polyfill": "^1.0.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",
